@@ -33,7 +33,31 @@ At a minimum, you will need the following things to build Wiring:
 
   - Linux: you're on your own. Your distribution's package manager
     likely provides many choices.
+    
+    For clean minimal CentOS installation, install git, then install java. Tested with Oracle Java 
+    wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u60-b27/jdk-8u60-linux-x64.rpm"
 
+    sudo yum localinstall jre-8u60-linux-x64.rpm
+    
+    add JAVA_HOME environment variable to startup scripts
+    
+    following
+    https://www.digitalocean.com/community/tutorials/how-to-install-java-on-centos-and-fedora
+    https://www.unixmen.com/install-oracle-java-jdk-8-centos-76-56-4/
+    
+    You will need to get GMP, MPFR and MPC to compile recent versions of the GCC compiler suite.
+    You will also want libusb and libelf to complie AVRDUDE
+    (repository versions in Cent OS 7 installed using yum seem to work)
+    
+    Add builds of GCC for AVR target following instructions at:
+    www.nongnu.org/avr-libc/user-manual/intsall_tools.html
+    Add a build of AVRDUDE following instructions at:
+    www.nongnu.org/avr-libc/user-manual/intsall_tools.html
+    After compling and installing avrdude, copy a file that is
+    needed by the wiring IDE from the avrdude directory:
+    >cp obj-avr/avrdude.conf $PREFIX/bin
+    
+    
 + Apache Ant.
 
   - Windows: download and install Ant from its Apache page:
@@ -54,6 +78,13 @@ At a minimum, you will need the following things to build Wiring:
 
   - Linux: you'll likely find Ant in your distribution's package
     manager (e.g. on Debian or Ubuntu: sudo apt-get install ant).
+    
+    For source build on Cent OS
+    git clone https://git-wip-us.apache.org/repos/asf/ant
+    cd ant
+    sh build.sh -Ddist.dir=/usr/ant
+    following
+    https://www.unixmen.com/install-apache-ant-maven-tomcat-centos-76-5/
 
 Depending on your platform, you will also need some other stuff:
 
@@ -74,6 +105,15 @@ Depending on your platform, you will also need some other stuff:
 
     - tar: We test with GNU tar. This is almost certainly already
       installed on your system.
+    - current ant build installs an old version of avr binaries,
+      once the build finishes, copy your version of avr, assuming
+      PREFIX in the avr installation process is set to $HOME/local/avr
+      and $WIRING_DIR is the location where Wiring was cloned to then
+      >cp -r $HOME/local/avr $WIRING_DIR/Wiring/out/dist/wirint-v1.0.1-dev/tools
+      
+    - when building from source, be sure to add user to dialout group
+      to ensure can upload code to wiring board for example using
+      >sudo gpasswd --add $USER dialout
 
 2. GRAB THE CODE FROM GITHUB
 
